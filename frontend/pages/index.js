@@ -1,9 +1,9 @@
 import Head from 'next/head'
 import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import React, { useState, useEffect } from 'react';
 import AuthButton from '../components/authbutton';
 import { useRouter } from 'next/router'
+import styles from '../styles/Home.module.css'
 
 
 export default function Home() {
@@ -15,7 +15,7 @@ export default function Home() {
       } else {
         localStorage.removeItem("user")
         localStorage.removeItem("hashedUserString")
-        console.log("Incorrect Hash located")
+        console.error("Incorrect Hash located")
       }
     })
     }
@@ -34,27 +34,19 @@ export default function Home() {
         </Head>
   
         <main className={styles.main}> 
+          <img src="/mascot.jpg" width="100"/>
           <h1 className={styles.title}>
-            The swaggest of the chats
+            SwagChat 
+            <sup className={styles.versionlabel}>V3</sup>
           </h1>
-          <h2>Please ive lost my wife and kids</h2>
+          <h2>Underground group messaging platform</h2>
           <AuthButton/>
         </main>
   
         <footer className={styles.footer}>
-          <p>
-          <a
-            href="https://i.kym-cdn.com/entries/icons/original/000/030/873/Screenshot_20.jpg"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Powered by{' '}
-            <strong>
-              Swag
-            </strong>
+          <a href="https://i.kym-cdn.com/entries/icons/original/000/030/873/Screenshot_20.jpg" target="_blank" rel="noopener noreferrer">
+            <p>Powered by <strong> Swag</strong></p>
           </a>
-          </p>
-  
         </footer>
       </div>
     )

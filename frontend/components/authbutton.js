@@ -19,15 +19,11 @@ export default function AuthButton() {
     });
   }
   function handleLogIn() {
-<<<<<<< HEAD
-    localStorage.setItem('user', userName)
-=======
     sha512(userName).then((response)=>{
       localStorage.setItem('hashedUserString', response)
     })
     localStorage.setItem('user', userName);
->>>>>>> e92e4c538e5cec5e9ab4eff96cac1afd7928812d
-
+    
     router.push('chat')
   }
 
