@@ -12,11 +12,26 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
- 
+        <h1 className={styles.title}>
+          The swaggest of the chats
+        </h1>
+        <h2>Please ive lost my wife and kids</h2>
       </main>
 
       <footer className={styles.footer}>
-        <p>Powered by<a href="https://i.kym-cdn.com/entries/icons/original/000/030/873/Screenshot_20.jpg" target="_blank"><strong> swag</strong></a></p>
+        <p>
+        <a
+          href="https://i.kym-cdn.com/entries/icons/original/000/030/873/Screenshot_20.jpg"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Powered by{' '}
+          <strong>
+            Swag
+          </strong>
+        </a>
+        </p>
+
       </footer>
     </div>
   )
