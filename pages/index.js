@@ -1,9 +1,13 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import React, { useState } from 'react';
 
+function authenticateUser() {
+  console.log('sheesh')
+}
 export default function Home() {
-  var authed = true;
+  const [authed, setAuthed] = useState(false);
   if (!authed) {
     return (
       <div className={styles.container}>
@@ -18,6 +22,9 @@ export default function Home() {
             The swaggest of the chats
           </h1>
           <h2>Please ive lost my wife and kids</h2>
+          <button onClick={()=> {
+            setAuthed(true)
+          }}>authenticate here</button>
         </main>
   
         <footer className={styles.footer}>
@@ -38,7 +45,8 @@ export default function Home() {
       </div>
     )
   } else {
-    return <h1>poop</h1>
+    return <>poop</>
   }
   
 }
+
