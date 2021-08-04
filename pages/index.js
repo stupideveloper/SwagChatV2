@@ -2,12 +2,11 @@ import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
 import React, { useState } from 'react';
+import Chat from '../components/chat';
 
-function authenticateUser() {
-  console.log('sheesh')
-}
 export default function Home() {
   const [authed, setAuthed] = useState(false);
+  var swagVersion = 3
   if (!authed) {
     return (
       <div className={styles.container}>
@@ -19,12 +18,14 @@ export default function Home() {
   
         <main className={styles.main}>
           <h1 className={styles.title}>
-            The swaggest of the chats
+            SwagChat v{swagVersion}
           </h1>
-          <h2>Please ive lost my wife and kids</h2>
+          <br></br>
+          <input type="input" hidden></input>
+          <h2>The Swaggest of all Chats</h2>
           <button onClick={()=> {
             setAuthed(true)
-          }}>authenticate here</button>
+          }}>Click here to begin Authentication</button>
         </main>
   
         <footer className={styles.footer}>
@@ -45,8 +46,10 @@ export default function Home() {
       </div>
     )
   } else {
-    return <>poop</>
+    return <><Chat/></>
   }
-  
+  function authenticateUser(username) {
+    console.log('sheesh ' + username)
+  }  
 }
 
