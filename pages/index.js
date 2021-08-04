@@ -10,13 +10,14 @@ export default function Home() {
   const router = useRouter()
   useEffect(() => {
     if (localStorage.getItem("user")) { 
-      if (sha512(localStorage.getItem("user"))==localStorage.getItem("hashedUserString")) {
+      sha512(localStorage.getItem("user")).then((e)=>{if (e==localStorage.getItem("hashedUserString")) {
         router.replace('chat') 
       } else {
         localStorage.removeItem("user")
         localStorage.removeItem("hashedUserString")
         console.log("Incorrect Hash located")
       }
+    })
     }
   })
   async function sha512(str) {
