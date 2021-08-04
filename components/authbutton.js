@@ -6,7 +6,7 @@ export default function AuthButton() {
 
   function handleChange(event) {
     const input = event.target;
-    const value = input.type === 'checkbox' ? input.checked : input.value;
+    const value = input.value;
   
     setUserName(value)
   }
