@@ -4,9 +4,6 @@ import styles from '../styles/Home.module.css'
 import React, { useState } from 'react';
 import AuthButton from '../components/authbutton';
 
-function authenticateUser() {
-  console.log('sheesh')
-}
 export default function Home() {
   const [authed, setAuthed] = useState(false);
   if (!authed) {
@@ -18,7 +15,7 @@ export default function Home() {
           <link rel="icon" href="/favicon.ico" />
         </Head>
   
-        <main className={styles.main}>
+        <main className={styles.main}> 
           <h1 className={styles.title}>
             The swaggest of the chats
           </h1>
