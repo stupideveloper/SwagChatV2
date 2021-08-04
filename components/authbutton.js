@@ -13,7 +13,15 @@ export default function AuthButton() {
   
     setUserName(value)
   }
+  async function sha512(str) {
+    return crypto.subtle.digest("SHA-512", new TextEncoder("utf-8").encode(str + "hahahahaha")).then(buf => {
+      return Array.prototype.map.call(new Uint8Array(buf), x=>(('00'+x.toString(16)).slice(-2))).join('');
+    });
+  }
   function handleLogIn() {
+    sha512(userName).then((response)=>{
+      localStorage.setItem('hashedUserString', response)
+    })
     localStorage.setItem('user', userName);
 
     router.push('chat')
