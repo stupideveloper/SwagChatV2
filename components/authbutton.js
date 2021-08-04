@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router'
+import styles from '../styles/Button.module.css'
 
 export default function AuthButton() {
   const [inputVisible, setInputVisible] = useState(false)
   const [userName, setUserName] = useState("")
   const router = useRouter()
-
 
   function handleChange(event) {
     const input = event.target
@@ -14,14 +14,14 @@ export default function AuthButton() {
     setUserName(value)
   }
   function handleLogIn() {
-    localStorage.setItem('user', userName);
+    localStorage.setItem('user', userName)
 
     router.push('chat')
   }
 
     return <>
       {!inputVisible && 
-        <button onClick={() => {
+        <button className={styles.button} onClick={() => {
           setInputVisible(true)
         }}>Join</button>
       }
