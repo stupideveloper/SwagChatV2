@@ -1,12 +1,16 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import AuthButton from '../components/authbutton';
+import { useRouter } from 'next/router'
+
 
 export default function Home() {
-  const [authed, setAuthed] = useState(false);
-  if (!authed) {
+  const router = useRouter()
+  useEffect(() => {
+    if (localStorage.getItem("user")) { router.replace('chat') }
+  })
     return (
       <div className={styles.container}>
         <Head>
@@ -40,9 +44,5 @@ export default function Home() {
         </footer>
       </div>
     )
-  } else {
-    return <>poop</>
-  }
-  
 }
 

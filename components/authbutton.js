@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
+import { useRouter } from 'next/router'
 
 export default function AuthButton() {
   const [inputVisible, setInputVisible] = useState(false)
   const [userName, setUserName] = useState("")
+  const router = useRouter()
+
 
   function handleChange(event) {
-    const input = event.target;
-    const value = input.value;
+    const input = event.target
+    const value = input.value
   
     setUserName(value)
   }
   function handleLogIn() {
     localStorage.setItem('user', userName);
+
+    router.push('chat')
   }
 
     return <>
@@ -30,6 +35,3 @@ export default function AuthButton() {
       }
     </>
 }
-
-
-
