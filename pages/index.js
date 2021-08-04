@@ -9,8 +9,21 @@ import { useRouter } from 'next/router'
 export default function Home() {
   const router = useRouter()
   useEffect(() => {
-    if (localStorage.getItem("user")) { router.replace('chat') }
+    if (localStorage.getItem("user")) { 
+      if (sha512(localStorage.getItem("user"))==localStorage.getItem("hashedUserString")) {
+        router.replace('chat') 
+      } else {
+        localStorage.removeItem("user")
+        localStorage.removeItem("hashedUserString")
+        console.log("Incorrect Hash located")
+      }
+    }
   })
+  async function sha512(str) {
+    return crypto.subtle.digest("SHA-512", new TextEncoder("utf-8").encode(str + "hahahahaha")).then(buf => {
+      return Array.prototype.map.call(new Uint8Array(buf), x=>(('00'+x.toString(16)).slice(-2))).join('');
+    });
+  }
     return (
       <div className={styles.container}>
         <Head>
