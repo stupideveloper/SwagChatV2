@@ -9,14 +9,20 @@ export default function Chat() {
   const router = useRouter()
 
   useEffect(() => {
-    if (!localStorage.getItem("hashedUserString")) { 
-      sha512(localStorage.getItem("user")).then((e)=>{if (e==localStorage.getItem("hashedUserString")) {
-      } 
+    /*if (!localStorage.getItem("hashedUserString")) { 
+      sha512(localStorage.getItem("user")).then((e)=>{
+      if (e==localStorage.getItem("hashedUserString")) {}
+      else {
+        //router.replace("/")
+        localStorage.removeItem("user")
+        localStorage.removeItem("hashedUserString")
+        console.error("Incorrect Hash located")
+      }
     })
   } else {
     router.replace("/")
   }
-  }, [])
+  }, [])*/
   async function sha512(str) {
     return crypto.subtle.digest("SHA-512", new TextEncoder("utf-8").encode(str + "hahahahaha")).then(buf => {
       return Array.prototype.map.call(new Uint8Array(buf), x=>(('00'+x.toString(16)).slice(-2))).join('');
