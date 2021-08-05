@@ -5,6 +5,7 @@ import styles from '../styles/Button.module.css'
 export default function AuthButton() {
   const [inputVisible, setInputVisible] = useState(false)
   const [userName, setUserName] = useState("")
+  const [warning, setWarning] = useState("")
   const router = useRouter()
 
   function handleChange(event) {
@@ -19,12 +20,33 @@ export default function AuthButton() {
     });
   }
   function handleLogIn() {
-    sha512(userName).then((response)=>{
-      localStorage.setItem('hashedUserString', response)
+
+    fetch('http://localhost:3000/userauth/newusercheck', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        name: userName
+      })
     })
-    localStorage.setItem('user', userName);
-    
-    router.push('chat')
+    .then(response => {
+      response.json()
+      if(response.status == 409) {
+        console.warn("Username is in use")
+        setWarning("That username is unavaliable.")
+      }
+      if(response.status == 200) {
+        sha512(userName).then((response)=>{
+          localStorage.setItem('hashedUserString', response)
+        })
+        localStorage.setItem('user', userName);
+        
+        router.push('chat')
+      }
+
+    })
   }
 
     return <>
@@ -36,9 +58,10 @@ export default function AuthButton() {
 
       {inputVisible &&
         <div>
-          <span>Enter Name </span>
-          <input placeholder="BC Crew" onChange={handleChange}/>
+          <p style={{margin:0}}>Enter Username: </p>
+          <input placeholder="Mr Sussy Balls" onChange={handleChange} onSelect={()=>{router.prefetch('chat')}}/>
           <button onClick={handleLogIn}>GO!</button>
+          <p style={{color:"red", margin:0}}>{warning}</p>
         </div>
       }
     </>
