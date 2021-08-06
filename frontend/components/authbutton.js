@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router'
 import styles from '../styles/Button.module.css'
+import abcss from '../styles/Authbutton.module.css'
 
 export default function AuthButton() {
   const [inputVisible, setInputVisible] = useState(false)
@@ -21,7 +22,7 @@ export default function AuthButton() {
   }
   function handleLogIn() {
 
-    fetch('http://localhost:3000/userauth/newusercheck', {
+    fetch('/userauth/newusercheck', {
       method: 'POST',
       headers: {
         'Accept': 'application/json, text/plain, */*',
@@ -38,9 +39,9 @@ export default function AuthButton() {
         setWarning("That username is unavaliable.")
       }
       if(response.status == 200) {
-        sha512(userName).then((response)=>{
+        /*sha512(userName).then((response)=>{
           localStorage.setItem('hashedUserString', response)
-        })
+        }) We'll now get this from the server */ 
         localStorage.setItem('user', userName);
         
         router.push('chat')
@@ -58,9 +59,9 @@ export default function AuthButton() {
 
       {inputVisible &&
         <div>
-          <p style={{margin:0}}>Enter Username: </p>
-          <input placeholder="Mr Sussy Balls" onChange={handleChange} onSelect={()=>{router.prefetch('chat')}}/>
-          <button onClick={handleLogIn}>GO!</button>
+          <p style={{margin:'0 0 0.2rem 0'}}>Enter Username: </p>
+          <input className={abcss.input} placeholder="Mr Sussy Balls" onChange={handleChange} style={{borderTopRightRadius:0,borderBottomRightRadius:0}} onSelect={()=>{router.prefetch('chat')}}/>
+          <button onClick={handleLogIn} className={styles.primarybutton} style={{margin:0, borderTopLeftRadius:0, borderBottomLeftRadius:0}}>Go!</button>
           <p style={{color:"red", margin:0}}>{warning}</p>
         </div>
       }

@@ -1,5 +1,19 @@
 .button {
+  font-weight: 900;
   margin: 0;
+  padding: 0 3.5rem;
+  height: 2.81rem;
+  line-height: 2.8rem;
+  border-radius: 7px;
+  box-shadow: 0 4px 14px 0 rgb(0 0 0 / 10%);
+  cursor: pointer;
+  border: 0;
+}
+.primarybutton {
+  font-weight: 900;
+  color: white;
+  background-color: #0070f3;
+  margin: 0 0 0 1rem;
   padding: 0 3.5rem;
   height: 2.81rem;
   line-height: 2.8rem;

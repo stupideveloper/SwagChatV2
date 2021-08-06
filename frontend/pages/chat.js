@@ -1,47 +1,72 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
-import io from "socket.io-client";
-const ENDPOINT = "http://localhost:2000";
+import {socket} from "../functions/socket";
+
 
 export default function Chat() {
-  const [response, setResponse] = useState("");
   const router = useRouter()
+  const [username, setUsername] = useState("")
+  var [secretkey, setSecretkey] = useState("")
 
-  useEffect(() => {
-    /*if (!localStorage.getItem("hashedUserString")) { 
-      sha512(localStorage.getItem("user")).then((e)=>{
-      if (e==localStorage.getItem("hashedUserString")) {}
-      else {
-        //router.replace("/")
-        localStorage.removeItem("user")
-        localStorage.removeItem("hashedUserString")
-        console.error("Incorrect Hash located")
-      }
-    })
-  } else {
-    router.replace("/")
-  }
-  }, [])*/
-  async function sha512(str) {
-    return crypto.subtle.digest("SHA-512", new TextEncoder("utf-8").encode(str + "hahahahaha")).then(buf => {
-      return Array.prototype.map.call(new Uint8Array(buf), x=>(('00'+x.toString(16)).slice(-2))).join('');
-    });
-  }
+  useEffect(()=>{
+    // Send user to home page if they dont have all credentials
+    /*if(!localStorage.getItem("user")||!localStorage.getItem("userHash")) {
+      localStorage.removeItem("user")
+      localStorage.removeItem("userHash")
+      router.replace('/')
+      return
+    }*/
+    // Sets username state to the stored one
+    setUsername(localStorage.getItem("user"))
+  })
+  // Asks for authoriation when username is added or is changed
+  useEffect(()=> {
+    authoriseusername(username)
+  },[username])
 
-  useEffect(() => {
-    const socket = io(ENDPOINT);
+  const authoriseusername = (username) => {
+    if (!username) return
     console.log('connecting i think')
-    socket.on('connection', (socket) => {
-      socket.emit('chat message', {message: "hello guys"});
+    socket.on("connect", () => {
+      console.log("id=" + socket.id)
+      //if(!localStorage.getItem("userHash")) {
+        socket.emit("security_req", {name: username})
+      //} else {
+      //  console.log("Already have userHash")
+      //  console.log(localStorage.getItem("userHash"))
+      //  return
+      //} 
       console.log('sent')
-    });
-  }, []);
+      socket.on('sk_set', (data)=> {
+        setSecretkey(data.key)
+        console.log(data.key)
+        localStorage.setItem("userHash", data.key)
+      })
+    })
+  }
 
+  const sendMessage = () => {
+    console.log("sent: " + textinput)
+  }
+  const [textinput, setTextinput] = useState("")
+  // The page itself
   return (
-    <p>
-      It's <time dateTime={response}>{response}</time>
-    </p>
-  );
+    <>
+      <form onSubmit={(e)=>{
+        e.preventDefault()
+        console.log('sent: ' + textinput)
+        /*
+        * TODO: ABILITY TO SEND MESSAGE, MIN USERNAME CHAR LENGTH, TYPING ANIMATIONS, USER LIST
+        */
+      }}>
+        <input placeholder='Enter Message' onChange={(e)=>{
+          setTextinput(e.target.value)
+        }}/>
+        <button type='submit'>Send</button>
+      </form>
+
+    </>
+  )
 }
 
