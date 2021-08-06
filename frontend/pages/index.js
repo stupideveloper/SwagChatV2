@@ -9,22 +9,14 @@ import styles from '../styles/Home.module.css'
 export default function Home() {
   const router = useRouter()
   useEffect(() => {
-    if (localStorage.getItem("user")) { 
-      sha512(localStorage.getItem("user")).then((e)=>{if (e==localStorage.getItem("hashedUserString")) {
+    if (localStorage.getItem("user") || localStorage.getItem("userHash")) { 
         router.replace('chat') 
       } else {
         localStorage.removeItem("user")
-        localStorage.removeItem("hashedUserString")
+        localStorage.removeItem("userHash")
         console.error("Incorrect Hash located")
       }
-    })
-    }
   })
-  async function sha512(str) {
-    return crypto.subtle.digest("SHA-512", new TextEncoder("utf-8").encode(str + "hahahahaha")).then(buf => {
-      return Array.prototype.map.call(new Uint8Array(buf), x=>(('00'+x.toString(16)).slice(-2))).join('');
-    });
-  }
     return (
       <div className={styles.container}>
         <Head>

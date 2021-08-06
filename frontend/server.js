@@ -50,17 +50,27 @@ nextapp.prepare()
   })
 
   io.on("connection", (socket) => {
+    /* 
+    * Auth Logic
+    */
     socket.on("security_req", (arg) => {
+      console.log("got security_req")
       var needle = arg.name;
       console.log('needle=' + needle)
-      if(currentUsers.find(el => el.username == needle)) { console.log("duplicate name detected"); return}
-      
-
+      // If user already exists
+      //if(currentUsers.find(el => el.username == needle)) {return}
+      // If user does not fit regex
+      if(!/[a-zA-Z0-9_-]{3,16}/.test(needle)) return
       const hash = crypto.createHash('md5')
       .update("PleaseChangeThisToSomthingRandomlyGenerated", 'utf8')
       .digest('hex')      
       console.log('new hash = ' + hash)
-
+      if (currentUsers.includes({
+        id: socket.id,
+        username: arg.name,
+        hash: hash})) {
+          return
+        }
       currentUsers.push({
         id: socket.id,
         username: arg.name,
@@ -68,17 +78,49 @@ nextapp.prepare()
       })
 
       currentUsernames.push(arg.name)
-
       socket.emit('sk_set', {key: hash})
-
       console.log(currentUsers)
     });
+
+    /* 
+    * Message Logic
+    */
+    async function sendMessage(data, socket) {
+      var needle = socket.id
+      //if (!currentUsers.find(el => el.id === needle)) return
+      console.log('new message')
+      console.log(currentUsers);
+      const socketIdStore = await currentUsers.find(el => el.id === needle)
+      if(!socketIdStore) return
+      if (socketIdStore.hash == data.hash) {
+        console.log("message verified")
+        io.sockets.emit('chat message', {
+          from: data.username,
+          message: data.message
+        }) 
+        console.log("message emmited")
+      }
+    }
+    socket.on('new message', (data) => {
+      sendMessage(data, socket)
+    })
+
+    async function filterUser(needle) {
+      // spahgetti
+      const itemfound = await currentUsers.find(el => el.id === needle)
+      const filter = await currentUsers.filter(item => item === itemfound)
+      console.log("finding the element:")
+      console.log(await currentUsers.find(el => el.id === needle))
+      currentUsers = await filter
+      console.log(await currentUsers)
+      /* TRENT:: pls fix we need to remove the users object when they disconnect, idk why its not working*/
+    }
     socket.on('disconnect', () => {
       console.log(`${socket.id} just disconnected`)
       var needle = socket.id;
+      console.log(socket.id + ' filtering now..')
       // remove user object
-      currentUsers = currentUsers.filter(item => item === currentUsers.find(el => el.id === needle))
-      console.log(currentUsers)
+      filterUser(needle)
     })
   });
 })
