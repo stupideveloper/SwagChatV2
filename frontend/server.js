@@ -50,6 +50,12 @@ nextapp.prepare()
   })
 
   io.on("connection", (socket) => {
+
+    socket.on('new message', (data) => {
+      console.log('newmsg')
+      sendMessage(data, socket)
+    })
+
     /* 
     * Auth Logic
     */
