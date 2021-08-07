@@ -100,16 +100,16 @@ nextapp.prepare()
       if(!socketIdStore) return
       if (socketIdStore.hash == data.hash) {
         console.log("message verified")
-        io.sockets.emit('chat message', {
+        socket.emit('chat message', {
           from: data.username,
           message: data.message
         }) 
         console.log("message emmited")
       }
     }
-    socket.on('new message', (data) => {
-      sendMessage(data, socket)
-    })
+
+    
+
 
     /**
      * Removes a user after they disconnect

@@ -69,12 +69,7 @@ export default function Chat() {
     }
   }
 
-  /*
-  * Recive Message Handeler
-  */
-  socket.on('chat message', (data)=>{
-    console.log('msg')
-  })
+
 
   // The page itself
   return (
