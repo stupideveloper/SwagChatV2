@@ -52,7 +52,6 @@ nextapp.prepare()
   io.on("connection", (socket) => {
 
     socket.on('new message', (data) => {
-      console.log('newmsg')
       sendMessage(data, socket)
     })
 
@@ -98,14 +97,13 @@ nextapp.prepare()
     * 
     */
     async function sendMessage(data, socket) {
+      console.log(data)
       var needle = socket.id
       //if (!currentUsers.find(el => el.id === needle)) return
       console.log('new message')
-      console.log(currentUsers);
       const socketIdStore = await currentUsers.find(el => el.id === needle)
       if(!socketIdStore) return
       if (socketIdStore.hash == data.hash) {
-        console.log("message verified")
         socket.emit('chat message', {
           from: data.username,
           message: data.message

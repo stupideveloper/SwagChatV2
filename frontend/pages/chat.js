@@ -1,19 +1,21 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
-import {socket} from '../functions/socket';
+import { socket } from '../functions/MessageManager';
+import { secretKey, authoriseUsername } from '../functions/SecretKeyManager';
+import { getUsername, setUsername } from '../functions/UsernameManager';
 import btnstyle from '../styles/Button.module.css'
 import pupstyle from '../styles/Popup.module.css'
 
 
 export default function Chat() {
   const router = useRouter()
-  const [username, setUsername] = useState("")
-  const [secretkey, setSecretkey] = useState("")
+  const [stateUsername, setStateUsername] = useState("")
+  const [stateSecretkey, setStateSecretkey] = useState("")
 
   // Not authenticated popup
   function Popup() {
-    if (!username) {
+    if (false) {
       return (
         <div className={pupstyle.popup}>
           <div className={pupstyle.messagecontainer}>
@@ -39,37 +41,18 @@ export default function Chat() {
   },[])
   // Asks for authoriation when username is added or is changed
   useEffect(()=> {
-    authoriseusername(localStorage.getItem("user"))
-  },[])
+    async function test() {
+      setStateUsername(getUsername())
 
-  const authoriseusername = (username) => {
-    if (!username) return
-    if(socket.connected) {
-      sendReq()
-    }
-    socket.on("connect", () => {
-      sendReq()
-    })
-    function sendReq() {
-      console.log("id=" + socket.id)
-      //if(!localStorage.getItem("userHash")) {
+
       localStorage.removeItem("userHash")
-      socket.emit("security_req", {name: username})
-      //} else {
-      //  console.log("Already have userHash, but re-requesting")
-      //  console.log(localStorage.getItem("userHash"))
-      //  return
-      //} 
-      console.log('sent')
-      socket.on('sk_set', (data)=> {
-        setSecretkey(data.key)
-        console.log(data.key)
-        localStorage.setItem("userHash", data.key)
-      })
+      var hash = await authoriseUsername(localStorage.getItem("user"))
+      setStateSecretkey(await hash)
+      console.log('stateSecretkey' + await hash)
+      localStorage.setItem("userHash", await hash)
     }
-  }
-
-
+    test()
+  },[])
 
   // The page itself
   return (
@@ -78,10 +61,10 @@ export default function Chat() {
       <form onSubmit={(e)=>{
         e.preventDefault()
         console.log('sent: ' + e.target.username.value)
-        console.log(secretkey)
+        console.log(stateSecretkey)
         socket.emit('new message', {
-          username: username,
-          hash: secretkey,
+          username: stateUsername,
+          hash: stateSecretkey,
           message: e.target.username.value
         })
         e.target.username.value = ""
