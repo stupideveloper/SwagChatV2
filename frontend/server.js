@@ -62,7 +62,7 @@ nextapp.prepare()
       // If user does not fit regex
       if(!/[a-zA-Z0-9_-]{3,16}/.test(needle)) return
       const hash = crypto.createHash('md5')
-      .update("PleaseChangeThisToSomthingRandomlyGenerated", 'utf8')
+      .update(needle + Date.now, 'utf8')
       .digest('hex')      
       console.log('new hash = ' + hash)
       if (currentUsers.includes({
@@ -82,8 +82,14 @@ nextapp.prepare()
       console.log(currentUsers)
     });
 
-    /* 
+    /**
     * Message Logic
+    * 
+    * @param {} data
+    * The message to send
+    * @param {} socket
+    * The socket who set the message
+    * 
     */
     async function sendMessage(data, socket) {
       var needle = socket.id
@@ -105,15 +111,16 @@ nextapp.prepare()
       sendMessage(data, socket)
     })
 
+    /**
+     * Removes a user after they disconnect
+     * @param {} needle 
+     * The socket id of the user who disconnects
+     * 
+     */
     async function filterUser(needle) {
-      // spahgetti
-      const itemfound = await currentUsers.find(el => el.id === needle)
-      const filter = await currentUsers.filter(item => item === itemfound)
+      const filter = await currentUsers.filter(item => item.id !== needle)
       console.log("finding the element:")
-      console.log(await currentUsers.find(el => el.id === needle))
-      currentUsers = await filter
-      console.log(await currentUsers)
-      /* TRENT:: pls fix we need to remove the users object when they disconnect, idk why its not working*/
+      currentUsers = filter
     }
     socket.on('disconnect', () => {
       console.log(`${socket.id} just disconnected`)
