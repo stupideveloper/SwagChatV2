@@ -1,0 +1,110 @@
+.chatarea {
+  flex-grow: 1;
+}
+.inputmessagebox > form {
+  display: flex;
+  margin-bottom: 1rem;
+}
+.inputmessagebox > form > input {
+  margin: 0;
+  padding: 0 1rem;
+  height: 2.81rem;
+  border-radius: 7px;
+  border: 0;
+  flex-grow:1;
+}
+.chatarea {
+  display: flex;
+  flex-direction: column ;
+}
+.messages {
+  flex-grow: 1;
+  z-index: 1;
+  overflow-y: scroll;
+  margin-bottom: 0.8rem;
+}
+.messages::-webkit-scrollbar , .wrapper::-webkit-scrollbar {
+  background-color: transparent;
+}
+.messages::-webkit-scrollbar-thumb , .wrapper::-webkit-scrollbar{
+  background-color: #525252;
+  border-radius: 2.5px;
+}
+
+
+.swagchatlogo {
+  flex-shrink: 1;
+  border-bottom: solid #151515 3px;
+  margin-bottom: 0.8rem;
+}
+.swagchatlogo > h3 {
+  color: #1f1f1f;
+  font-size: 5rem;
+  top: 0;
+  margin: 0 0 0.5rem 0;
+}
+.userarea {
+  width: 33.333%;
+  padding: 1rem;
+  height: 100vh;
+  float: right;
+  max-width: 350px;
+}
+.userarea > .wrapper {
+  height: 100%;
+  background-color: #151515;
+  padding: 0.6rem;
+  border-radius: 7px;
+  overflow-y: scroll;
+}
+
+.userarea > .wrapper > h4 {
+  margin: 0;
+  font-size: large;
+}
+
+.userlist {
+  list-style: none;
+  padding: 0;
+  height: inherit;
+}
+.userlist > li {
+  padding: 0;
+  background: rgb(12, 12, 12);
+  padding: 0.8rem;
+  margin-bottom: 0.8rem;
+  border-radius: 7px;
+  color: #c1c1c1;
+}
+.userlist > li::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 7.5px;
+  background-color: #2edb0f;
+  margin-right: 10px;
+}
+.userlist > li:hover {
+  background: rgb(82, 82, 82);
+  cursor: pointer;
+}
+.outerwrapper {
+  overflow-x: hidden;
+  display: flex;
+  margin: auto;
+  padding: 0 5%;
+  max-height: 100vh;
+}
+
+/*
+* Animation
+*/
+@keyframes colour-rotate {
+  from {
+    filter: hue-rotate(0deg);
+  }
+  to {
+    filter: hue-rotate(360deg);
+  }
+}

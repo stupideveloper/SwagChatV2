@@ -1,9 +1,8 @@
-var username = 'test tickles'
+var username = ''
 export function getUsername() {
-  return username
+	return username
 }
 export function setUsername(set) {
-  username = set
-  console.info("Username is now: " + username)
-  return
+	username = set
+	return
 }

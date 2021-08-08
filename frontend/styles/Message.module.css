@@ -1,0 +1,19 @@
+.message {
+  margin: 0.2rem 1rem 0 0 ;
+  padding: 0.4rem;
+  border-radius: 7px;
+  background-color: #151515;
+}
+.message > p {
+  margin: 0;
+  padding: 0;
+}
+.username {
+  margin: 0;
+  padding: 0;
+
+}
+.messagecontent {
+  padding: 0 0 0 0.5rem;
+  color: #c1c1c1;
+}

@@ -19,3 +19,8 @@ a {
 :root {
   --light-grey: rgb(202, 202, 202);
 }
+.wrapper {
+  max-width: 1024px;
+  margin: auto;
+  padding: 0 1rem;
+}

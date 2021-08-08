@@ -1,0 +1,8 @@
+[] Fix
+  [] Make sure people cant send blank messages
+  [] Style it so it looks nice
+  [] Remove that weird delay bug
+ 
+[] Expand
+  [] Add user typing
+  [] Add video calling with webrtc

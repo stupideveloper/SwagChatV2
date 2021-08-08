@@ -22,3 +22,16 @@
   cursor: pointer;
   border: 0;
 }
+.primarybuttondisabled {
+  font-weight: 900;
+  color: white;
+  background-color: #526881;
+  margin: 0 0 0 1rem;
+  padding: 0 3.5rem;
+  height: 2.81rem;
+  line-height: 2.8rem;
+  border-radius: 7px;
+  box-shadow: 0 4px 14px 0 rgb(0 0 0 / 10%);
+  cursor: pointer;
+  border: 0;
+}
