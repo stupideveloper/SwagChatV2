@@ -1,4 +1,8 @@
+require('dotenv').config();
+
 const crypto = require('crypto')
+const {v4: uuidv4} = require("uuid")
+
 
 const express = require('express')
 const expressapp = express()
@@ -9,27 +13,37 @@ const dev = process.env.NODE_ENV !== 'development'
 const app = next({ dev })
 const handle = app.getRequestHandler()
 
-
 const { Server } = require('socket.io')
+
+const users = {};
+
+const socketToRoom = {};
+
+const PORT = 3000
+
+
 const io = new Server(httpServer, {
 	cors: {
-		origin: 'http://localhost:3000',
+		origin: `*`,
 		methods: ['GET', 'POST']
 	}
 })
 
+
+
 // Security Hashes
 
-/*let console = {
-	log: function() {},
-	warn: function() {},
-	error: function() {}
-}*/
 let currentUsernames = []
 let currentUsers = []
 app.prepare()
 	.then(() => {
 		expressapp.use(express.json())
+
+
+
+		/* 
+		* Check if username is free
+		*/
 		expressapp.post('/userauth/newusercheck', (req, res) => {
 			const reqInfo = req.body
 			//console.log(reqInfo)
@@ -42,14 +56,16 @@ app.prepare()
 			}  
 		})
   
-		//console.plead(jesuschrist)
-		console.log("Test")
-		// Routin
-
+		expressapp.get('/newroom', (req, res) => {
+			res.redirect(`/call/${uuidv4()}`)
+		})
+		
 		expressapp.get('*', (req, res) => {
 			return handle(req, res)
 		})
-
+		/*
+		* Auth Logic
+		*/ 
 		expressapp.post('/securityreq',(req,res) => {
 			var e = req.body
 			if (e.name) {
@@ -90,17 +106,12 @@ app.prepare()
 			return hash 
 		}
     
-		httpServer.listen(3000, (err) => {
+		httpServer.listen(PORT, (err) => {
 			if (err) throw err
-			console.log('> Ready on http://localhost:3000')
+			console.log(`> Ready on http://localhost:${PORT}`)
 		})
 
-			/* 
-    * Auth Logic
-    */
-			//socket.on("security_req", (arg) => {
-			//  authenticateUsername(arg,socket.id)});
-			/**
+		/*
     * Message Logic
     * 
     * @param {} data
@@ -110,9 +121,7 @@ app.prepare()
     * 
     */
 			 async function sendMessage(data, socket) {
-				console.log('we now be in the function yoo')
 				if (data.message.replaceAll(/\W/g,'')=='') return
-				console.log('past the if statement lets go')
 
 
 				//console.log(data)
@@ -138,23 +147,65 @@ app.prepare()
     
 
 		io.on('connection', (socket) => {
-			console.log('YOOOOOO')
+			/*
+			* User connection logic
+			*/
 			socket.on('userconnect',()=>{
 				io.emit('user join', currentUsers)
 				console.log('Incomming connection')
 			})
+
+			/*
+			* New message socket logic
+			*/
 			socket.on('new message', (data) => {
 				sendMessage(data, socket)
 				console.log('new message alert')
 			})
 
+			/*
+			* Video Chat Logic
+			*/
+			socket.on("join room", roomID => {
+        if (users[roomID]) {
+            const length = users[roomID].length;
+            if (length === 4) {
+                socket.emit("room full");
+                return;
+            }
+            users[roomID].push(socket.id);
+        } else {
+            users[roomID] = [socket.id];
+        }
+        socketToRoom[socket.id] = roomID;
+        const usersInThisRoom = users[roomID].filter(id => id !== socket.id);
 
-			/**
-     * Removes a user after they disconnect
-     * @param {} needle 
-     * The socket id of the user who disconnects
-     * 
-     */
+        socket.emit("all users", usersInThisRoom);
+    });
+
+    socket.on("sending signal", payload => {
+        io.to(payload.userToSignal).emit('user joined', { signal: payload.signal, callerID: payload.callerID });
+    });
+
+    socket.on("returning signal", payload => {
+        io.to(payload.callerID).emit('receiving returned signal', { signal: payload.signal, id: socket.id });
+    });
+
+    socket.on('disconnect', () => {
+        const roomID = socketToRoom[socket.id];
+        let room = users[roomID];
+        if (room) {
+            room = room.filter(id => id !== socket.id);
+            users[roomID] = room;
+        }
+    });
+
+			/*
+			 * Removes a user after they disconnect
+			 * @param {} needle 
+			 * The socket id of the user who disconnects
+			 * 
+			*/
 			async function filterUser(needle) {
 				const filter = await currentUsers.filter(item => item.id !== needle)
 				//console.log("finding the element:")
@@ -183,4 +234,3 @@ app.prepare()
 		process.exit(1)
 	})
 
-console.log('enviroment: ' + process.env.NODE_ENV)

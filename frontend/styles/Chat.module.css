@@ -1,5 +1,6 @@
 .chatarea {
   flex-grow: 1;
+  width: 75%;
 }
 .inputmessagebox > form {
   display: flex;
@@ -75,6 +76,7 @@
   margin-bottom: 0.8rem;
   border-radius: 7px;
   color: #c1c1c1;
+  cursor: pointer;
 }
 .userlist > li::before {
   content: '';
@@ -85,9 +87,16 @@
   background-color: #2edb0f;
   margin-right: 10px;
 }
-.userlist > li:hover {
-  background: rgb(82, 82, 82);
+.callbutton {
+  margin-left: 0.5rem;
+  visibility: hidden;
+  font-weight: bolder;
+  color: #2edb0f;
+
+}
+.userlist > li:hover .callbutton {
   cursor: pointer;
+  visibility: visible;
 }
 .outerwrapper {
   overflow-x: hidden;

@@ -1,8 +1,11 @@
-[] Fix
-  [] Make sure people cant send blank messages
-  [] Style it so it looks nice
-  [] Remove that weird delay bug
+[x] Fix
+  [x] Make sure people cant send blank messages
+  [x] Style it so it looks nice
+  [x] Remove that weird delay bug
  
 [] Expand
   [] Add user typing
-  [] Add video calling with webrtc
+  [x] Add video calling with webrtc
+  [] Add request call feature
+  [] Make video calling good
+  [] Move popup to own file

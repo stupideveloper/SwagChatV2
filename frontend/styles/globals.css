@@ -24,3 +24,32 @@ a {
   margin: auto;
   padding: 0 1rem;
 }
+
+/*
+* Tooltips
+*/
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* If you want dots under the hoverable text */
+  cursor: help;
+  font-size: smaller;
+  color: #c1c1c1;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 600px;
+  background-color: black;
+  color: #fff;
+  text-align: left;
+  position: absolute;
+  z-index: 99;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}

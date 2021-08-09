@@ -1,5 +1,6 @@
 import { socket } from '../functions/MessageManager'
 import { useState } from 'react'
+import styles from '../styles/Chat.module.css'
 
 export default function UserList() {
 	var [listofils, setListofils] = useState([])
@@ -7,12 +8,8 @@ export default function UserList() {
 
 	socket.on('user join',(msg)=>{
 		var users = msg
-		//console.log(msg)
-		// the keys have to be unique
-		// do you need a user leave connection thingo
-		// no
 		setListofils(users.map((user)=>{
-			return <li key={user.username + Math.random()}>{user.username}</li>
+			return <li key={user.username + Math.random()}><span>{user.username}</span><span className={styles.callbutton}>Call</span></li>
 		}))
 	})
 	return <>

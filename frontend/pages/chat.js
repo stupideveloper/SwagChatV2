@@ -1,14 +1,16 @@
+import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
 import { socket } from '../functions/MessageManager'
 import { authoriseUsername, getSecretKey, setSecretKey } from '../functions/SecretKeyManager'
-import { username, getUsername, setUsername } from '../functions/UsernameManager'
+import { getUsername, setUsername } from '../functions/UsernameManager'
 import btnstyle from '../styles/Button.module.css'
 import UserList from '../components/userlist'
 import ChatArea from '../components/chatarea'
 import pupstyle from '../styles/Popup.module.css'
 import styles from '../styles/Chat.module.css'
+import Tooltip from '../components/tooltip'
 
 
 export default function Chat() {
@@ -41,14 +43,24 @@ export default function Chat() {
 	}
 	// Asks for authoriation when username is added or is changed
 	useEffect(()=> {
+		console.time("lag checkar")
 		async function test() {
-			setUsername(getUsername())
+			console.timeEnd("timerer")
+			//console.time("aaaaaa")
+			//await socket.connected
+			//console.timeEnd("aaaaaa")
+			//setUsername(getUsername())
+			console.log("set username")
 			setTimeoutFinished(true)
-			console.log("TEST()")
+			console.log("log username")
 			console.log(getUsername())
-
+			console.log("remove user hash")
 			localStorage.removeItem('userHash')
+			console.log("start auth")
+			console.time("auth timer")
 			authoriseUsername(getUsername(), socket).then((hash)=>{
+				console.log("end auth")
+				console.timeEnd("auth timer")
 				if(!hash)return
 				console.log(socket.id)
 				console.log(hash)
@@ -56,22 +68,31 @@ export default function Chat() {
 				socket.emit('userconnect','')
 				console.log('stateSecretkey ' + hash.id)
 				localStorage.setItem('userHash', hash.id)
+				console.timeEnd("lag checkar")
 			})
 		}
-		setTimeout(()=>{test()},7000)
+		console.time("timerer")
+		socket.on("connect",()=>{
+			console.timeEnd("timerer")
+			test()
+		})
 		setUsername(localStorage.getItem('user'))
-		
-		test()
+		//test()
 	},[])
 	// The page itself
 	return (
 		<>
+			<Head>
+				<title>SwagChat&#7515;&#xB3;</title>
+				<meta name="description" content="The swaggest of the chats" />
+				<link rel="icon" href="/favicon.ico" />
+			</Head>
 			<Popup /> 
 			<div className={styles.outerwrapper}>
 				<div className={styles.chatarea}>
 					<div className={styles.swagchatlogo}>
-						<h3>SwagChat&trade;</h3>
-						
+						<h3>SwagChat<sup>V3</sup></h3>
+						<Tooltip question="Why can't I change my username?" answer="We disallow you changing your name for security, allowing to change a username could lead to identity theft and abuse."/>
 					</div>
 					<div className={styles.messages}>
 						<ChatArea />
