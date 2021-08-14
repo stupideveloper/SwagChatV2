@@ -17,7 +17,7 @@ export default function Chat() {
 	const router = useRouter()
 	const [timeoutfinished, setTimeoutFinished] = useState(false)
 	const [timeoutdelay, setTimeoutDelay] = useState(true)
-
+	const [connected, setConnected] = useState(false)
 	/*
 	*	 Not authenticated popup
 	*/
@@ -43,42 +43,28 @@ export default function Chat() {
 	}
 	// Asks for authoriation when username is added or is changed
 	useEffect(()=> {
-		console.time("lag checkar")
 		async function test() {
-			console.timeEnd("timerer")
-			//console.time("aaaaaa")
-			//await socket.connected
-			//console.timeEnd("aaaaaa")
-			//setUsername(getUsername())
-			console.log("set username")
 			setTimeoutFinished(true)
-			console.log("log username")
-			console.log(getUsername())
-			console.log("remove user hash")
 			localStorage.removeItem('userHash')
-			console.log("start auth")
-			console.time("auth timer")
 			authoriseUsername(getUsername(), socket).then((hash)=>{
-				console.log("end auth")
-				console.timeEnd("auth timer")
 				if(!hash)return
-				console.log(socket.id)
-				console.log(hash)
 				setSecretKey(hash.id)
 				socket.emit('userconnect','')
-				console.log('stateSecretkey ' + hash.id)
 				localStorage.setItem('userHash', hash.id)
-				console.timeEnd("lag checkar")
 			})
 		}
-		console.time("timerer")
 		socket.on("connect",()=>{
-			console.timeEnd("timerer")
 			test()
+			setConnected(true)
+			socket.on("disconnect", ()=>{
+				setConnected(false)
+			})
 		})
 		setUsername(localStorage.getItem('user'))
-		//test()
 	},[])
+
+
+	
 	// The page itself
 	return (
 		<>
@@ -92,6 +78,12 @@ export default function Chat() {
 				<div className={styles.chatarea}>
 					<div className={styles.swagchatlogo}>
 						<h3>SwagChat<sup>V3</sup></h3>
+						{connected &&
+							<p><span className={styles.connectionlabel}>Connected</span></p>
+						} 
+						{!connected &&
+							<p><span className={styles.disconnectedlabel}>Disconnected</span></p>
+						}
 						<Tooltip question="Why can't I change my username?" answer="We disallow you changing your name for security, allowing to change a username could lead to identity theft and abuse."/>
 					</div>
 					<div className={styles.messages}>

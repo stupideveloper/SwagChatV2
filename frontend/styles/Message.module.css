@@ -16,4 +16,5 @@
 .messagecontent {
   padding: 0 0 0 0.5rem;
   color: #c1c1c1;
+  overflow-wrap: anywhere;
 }

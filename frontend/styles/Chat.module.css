@@ -23,6 +23,7 @@
   z-index: 1;
   overflow-y: scroll;
   margin-bottom: 0.8rem;
+  overflow-x: clip;
 }
 .messages::-webkit-scrollbar , .wrapper::-webkit-scrollbar {
   background-color: transparent;
@@ -39,10 +40,11 @@
   margin-bottom: 0.8rem;
 }
 .swagchatlogo > h3 {
-  color: #1f1f1f;
-  font-size: 5rem;
+  color: #c1c1c1;
+  font-size: 4rem;
   top: 0;
   margin: 0 0 0.5rem 0;
+
 }
 .userarea {
   width: 33.333%;
@@ -77,6 +79,11 @@
   border-radius: 7px;
   color: #c1c1c1;
   cursor: pointer;
+  user-select: none;
+}
+.userlist > li > span {
+  overflow-wrap: anywhere;
+
 }
 .userlist > li::before {
   content: '';
@@ -106,6 +113,29 @@
   max-height: 100vh;
 }
 
+.connectionlabel::before, .disconnectedlabel::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 7.5px;
+  margin-right: 10px;
+}
+.connectionlabel::before {
+  background-color: #2edb0f;
+}
+.disconnectedlabel::before {
+  background-color: #db0f0f;
+}
+.connectionlabel, .disconnectedlabel {
+  color:#c1c1c1;
+  margin-bottom: 0.3rem;
+  margin-top: 0.1rem;
+  font-size: smaller;
+  background-color: #151515;
+  padding: 0.5rem;
+  border-radius: 7px;
+}
 /*
 * Animation
 */

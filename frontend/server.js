@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const crypto = require('crypto')
-const {v4: uuidv4} = require("uuid")
+const {v4: uuidv4} = require('uuid')
 
 
 const express = require('express')
@@ -57,7 +57,7 @@ app.prepare()
 		})
   
 		expressapp.get('/newroom', (req, res) => {
-			res.redirect(`/call/${uuidv4()}`)
+			res.send({uid:uuidv4()})
 		})
 		
 		expressapp.get('*', (req, res) => {
@@ -74,9 +74,14 @@ app.prepare()
 				res.end()
 			}
 		})
+
+		expressapp.post('/swagclient/servertest',(req,res) => {
+			res.sendStatus(200)
+			res.end()
+		})
 		
 		function authenticateUsername(arg,socketid) {
-			//console.log("got security_req")
+			//console.log('got security_req')
 			var needle = arg.name
 			//console.log('needle=' + needle)
 			// If user already exists
@@ -138,9 +143,9 @@ app.prepare()
 						from: data.username,
 						message: data.message
 					}) 
-					//console.log("message emmited")
+					//console.log('message emmited')
 				} else {
-					console.error("i have no clue what is wrong")
+					console.error('i have no clue what is wrong')
 				}
 			}
 
@@ -166,11 +171,11 @@ app.prepare()
 			/*
 			* Video Chat Logic
 			*/
-			socket.on("join room", roomID => {
+			socket.on('join room', roomID => {
         if (users[roomID]) {
             const length = users[roomID].length;
             if (length === 4) {
-                socket.emit("room full");
+                socket.emit('room full');
                 return;
             }
             users[roomID].push(socket.id);
@@ -180,25 +185,39 @@ app.prepare()
         socketToRoom[socket.id] = roomID;
         const usersInThisRoom = users[roomID].filter(id => id !== socket.id);
 
-        socket.emit("all users", usersInThisRoom);
+        socket.emit('all users', usersInThisRoom);
+				socket.on('disconnect', () => {
+					console.log("disconnected from video")
+					const roomID = socketToRoom[socket.id];
+					let room = users[roomID];
+					if (room) {
+							room = room.filter(id => id !== socket.id);
+							users[roomID] = room;
+					}
+			});
     });
 
-    socket.on("sending signal", payload => {
+    socket.on('sending signal', payload => {
         io.to(payload.userToSignal).emit('user joined', { signal: payload.signal, callerID: payload.callerID });
     });
 
-    socket.on("returning signal", payload => {
+    socket.on('returning signal', payload => {
         io.to(payload.callerID).emit('receiving returned signal', { signal: payload.signal, id: socket.id });
     });
 
-    socket.on('disconnect', () => {
-        const roomID = socketToRoom[socket.id];
-        let room = users[roomID];
-        if (room) {
-            room = room.filter(id => id !== socket.id);
-            users[roomID] = room;
-        }
-    });
+		socket.on('request call', (data) => {
+			console.log(`Video request recived, id: ${data.uuid} to: ${data.to} who is at socket id: ${data.socket} sent:${data.from}`)
+			socket.broadcast.to(data.socket).emit('call request to user', {fromsocket: data.fromsocket, uuid: data.uuid, socket: socket.id, from: data.from});
+		})
+
+		socket.on('send accept call', (data) => {
+			console.log('accepted call')
+			console.log('from: ' + socket.id)
+			console.log(data.socket)
+			socket.broadcast.to(data.socket).emit('accepted call', {socket: data.socket, uuid: data.uuid})
+		})
+
+
 
 			/*
 			 * Removes a user after they disconnect
@@ -208,13 +227,13 @@ app.prepare()
 			*/
 			async function filterUser(needle) {
 				const filter = await currentUsers.filter(item => item.id !== needle)
-				//console.log("finding the element:")
+				//console.log('finding the element:')
 				//console.log(currentUsers)
 				// thats a bit pissy
 				currentUsers = filter
 				io.emit('user join',currentUsers)
 				//console.log(currentUsers)
-				//console.log("????")
+				//console.log('????')
 			}
 			socket.on('reload userlist',()=>{
 				socket.emit('user join',currentUsers)

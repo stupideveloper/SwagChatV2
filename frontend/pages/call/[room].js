@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Peer from "simple-peer";
 import { socket } from "../../functions/MessageManager";
 import { useRouter } from 'next/router'
+import styles from '../../styles/Call.module.css'
 
 
 const Video = (props) => {
@@ -10,11 +11,12 @@ const Video = (props) => {
     useEffect(() => {
         props.peer.on("stream", stream => {
             ref.current.srcObject = stream;
+            console.log(stream)
         })
     }, []);
 
     return (
-        <video playsInline autoPlay ref={ref} />
+        <video playsInline autoPlay ref={ref} className={styles.video} />
     );
 }
 var videoConstraints = {};
@@ -34,14 +36,15 @@ const Room = (props) => {
       videoConstraints = {
         height: window.innerHeight / 2,
         width: window.innerWidth / 2
-    };
-    
+        };
     }, [])
 
     useEffect(() => {
         navigator.mediaDevices.getUserMedia({ video: videoConstraints, audio: true }).then(stream => {
+            
             userVideo.current.srcObject = stream;
-            socket.emit("join room", '52522954-2ac6-4f53-9596-93079b2d5926');
+            console.log(stream)
+            socket.emit("join room", room);
             socket.on("all users", users => {
                 const peers = [];
                 users.forEach(userID => {
@@ -103,8 +106,8 @@ const Room = (props) => {
     }
 
     return (
-        <div>
-            <video muted ref={userVideo} autoPlay playsInline />
+        <div className={styles.videogrid}>
+            <video muted ref={userVideo} autoPlay playsInline className={styles.video} />
             {peers.map((peer, index) => {
                 return (
                     <Video key={index} peer={peer} />
